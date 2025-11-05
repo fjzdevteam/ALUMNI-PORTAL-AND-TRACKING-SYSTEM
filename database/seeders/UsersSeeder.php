@@ -31,20 +31,6 @@ class UsersSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'username' => 'zhanie',
-                'password' => Hash::make('Zhanie09!'),
-                'last_name' => 'Chavez',
-                'first_name' => 'Zhan Lexie',
-                'middle_name' => 'Magdayao',
-                'suffix' => null,
-                'email' => 'zhanlexiechavez@gmail.com',
-                'role' => 'alumni',
-                'status' => 'active',
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ]);
     }
 }
