@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Http\Controllers\Shared;
+
+use App\Http\Controllers\Controller;
+use Illuminate\View\View;
+use App\Models\User;
+use App\Mail\SendOtpMail;
+use App\Models\PasswordOtp;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+
+class PasswordResetLinkController extends Controller
+{
+    public function showForgotPassword(): View
+    {
+        return view('shared.forgot-password');
+    }
+
+    public function showVerifyCode(): View
+    {
+        return view('shared.verification-code');
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'No account found with that email.']);
+            }
+            return back()->withErrors(['email' => 'No account found with that email.']);
+        }
+
+        $otp = rand(1000, 9999);
+        $otpHash = Hash::make($otp);
+
+        PasswordOtp::updateOrCreate(
+            ['email' => $user->email],
+            ['otp_hash' => $otpHash, 'expires_at' => now()->addMinutes(10)]
+        );
+
+        Mail::to($user->email)->send(new SendOtpMail($otp));
+
+        session(['email' => $user->email]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Verification code resent!']);
+        }
+
+        return redirect()->route('verification.form')->with('email', $user->email);
+    }
+
+    public function showVerificationForm()
+    {
+        return view('shared.verification-code', ['email' => session('email')]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        if (!$request->filled('email') && session()->has('email')) {
+            $request->merge(['email' => session('email')]);
+        }
+
+        $email = $request->input('email');
+        if (is_array($email)) {
+            $email = $email[0];
+        }
+        $request->merge(['email' => (string) $email]);
+
+        $otp = $request->input('otp');
+        if (is_array($otp)) {
+            $otp = implode('', $otp);
+        }
+        $request->merge(['otp' => (string) $otp]);
+
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|digits:4',
+        ]);
+
+        $otpRecord = PasswordOtp::where('email', $email)->first();
+        if (!$otpRecord) {
+            return back()->withErrors(['otp' => 'OTP not found.']);
+        }
+        if ($otpRecord->isExpired()) {
+            return back()->withErrors(['otp' => 'OTP has expired.']);
+        }
+        if (!Hash::check($request->otp, $otpRecord->otp_hash)) {
+            return back()->withErrors(['otp' => 'Invalid OTP.'])->withInput();
+        }
+
+        return redirect()->route('password.new')->with('email', $email);
+
+        session(['email' => $email]);
+
+        return redirect()->route('password.new')->with('email', $email);
+    }
+
+    public function showNewPasswordForm()
+    {
+        return view('shared.new-password', ['email' => session('email')]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return back()->withErrors(['email' => 'User not found.']);
+        }
+
+        $user->update(['password' => Hash::make($request->password)]);
+        PasswordOtp::where('email', $user->email)->delete();
+
+        $redirectRoute = $user->role === 'admin' ? route('admin.login') : route('alumni.login');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Password reset successful!',
+                'redirect_to' => $redirectRoute
+            ]);
+        }
+
+        session(['redirect_to' => $user->role === 'admin' ? 'admin.login' : 'alumni.login']);
+
+        return redirect()->route($user->role === 'admin' ? 'admin.login' : 'alumni.login')
+            ->with('success', 'Password reset successful!');
+    }
+}
