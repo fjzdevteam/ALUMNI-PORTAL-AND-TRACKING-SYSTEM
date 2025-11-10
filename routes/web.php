@@ -41,16 +41,8 @@ use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Mail;
 
-Route::get('/test-mail', function () {
-    try {
-        Mail::raw('This is a test email from Brevo SMTP.', function ($message) {
-            $message->to('yourpersonalemail@gmail.com')
-                ->subject('Brevo SMTP Test');
-        });
-        return '✅ Email sent successfully!';
-    } catch (\Exception $e) {
-        return '❌ Error: ' . $e->getMessage();
-    }
+Route::get('/test-brevo-key', function () {
+    dd(env('BREVO_API_KEY'));
 });
 
 // ERRORS ROUTE
