@@ -83,7 +83,7 @@
                         <div class="flex flex-col items-end md:w-32 text-right">
                             <span
                                 class="text-sm font-semibold text-yellow-700 bg-yellow-100 px-3 py-1 rounded-full mb-3 w-full text-center">
-                                {{ number_format(($rec['similarity'] ?? 0) * 100, 2) }}% Match
+                                {{ number_format($rec['final_score_pct'] ?? 0, 2) }}% Match
                             </span>
                             <x-primary-button class="w-full text-center" :href="route('alumni.job.view', $rec['job_id'])">
                                 View Job
