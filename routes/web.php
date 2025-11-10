@@ -45,6 +45,14 @@ Route::get('/check-key', function () {
     dd(config('services.brevo.key'));
 });
 
+Route::get('/check-name', function () {
+    dd(config('services.brevo.name'));
+});
+
+Route::get('/check-email', function () {
+    dd(config('services.brevo.email'));
+});
+
 // ERRORS ROUTE
 Route::view('/admin/401', 'errors.admin-401')->name('admin.401');
 Route::view('/admin/403', 'errors.admin-403')->name('admin.403');
