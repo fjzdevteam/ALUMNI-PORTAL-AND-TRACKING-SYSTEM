@@ -58,8 +58,8 @@ class PasswordResetLinkController extends Controller
                 'Content-Type' => 'application/json'
             ])->post('https://api.brevo.com/v3/smtp/email', [
                 'sender' => [
-                    'name' => env('MAIL_FROM_NAME'),
-                    'email' => env('MAIL_FROM_ADDRESS')
+                    'name' => config('services.brevo.name'),
+                    'email' => config('services.brevo.email')
                 ],
                 'to' => [
                     ['email' => $user->email, 'name' => $user->name ?? $user->email]
