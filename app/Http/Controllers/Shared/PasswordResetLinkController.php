@@ -54,7 +54,7 @@ class PasswordResetLinkController extends Controller
         try {
             $response = Http::withHeaders([
                 'accept' => 'application/json',
-                'api-key' => env('BREVO_API_KEY'),
+                'api-key' => config('services.brevo.key'),
                 'Content-Type' => 'application/json'
             ])->post('https://api.brevo.com/v3/smtp/email', [
                 'sender' => [
