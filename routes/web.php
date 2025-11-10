@@ -41,8 +41,8 @@ use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Mail;
 
-Route::get('/test-brevo-key', function () {
-    dd(env('BREVO_API_KEY'));
+Route::get('/check-key', function () {
+    dd(config('services.brevo.key'));
 });
 
 // ERRORS ROUTE
