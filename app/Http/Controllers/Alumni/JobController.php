@@ -10,33 +10,26 @@ use Illuminate\Support\Facades\Log;
 
 class JobController extends Controller
 {
-    /**
-     * Display job recommendations for the logged-in alumni.
-     */
     public function index(Request $request)
     {
         $userId = Auth::id();
         $recommendations = [];
 
         try {
-            // Path to Python executable and ML script
-            $pythonPath = env('PYTHON_PATH', 'python'); 
+            // Use the Python path from .env
+            $pythonPath = env('PYTHON_PATH'); 
             $scriptPath = base_path('ml/recommend_jobs.py');
 
-            // Run the ML recommendation script
             $command = escapeshellcmd("$pythonPath \"$scriptPath\" $userId");
             $output = shell_exec($command);
 
-            // Decode the JSON output from the Python script
             $recommendations = json_decode($output, true) ?? [];
 
-            // Handle script errors
             if (!$recommendations || isset($recommendations['error'])) {
                 Log::warning('ML Script Error', ['output' => $output]);
                 $recommendations = [];
             }
 
-            // Filter out low-score results
             $recommendations = array_filter($recommendations, function ($rec) {
                 return isset($rec['final_score']) && $rec['final_score'] > 0.1;
             });
@@ -46,12 +39,10 @@ class JobController extends Controller
             $recommendations = [];
         }
 
-        // Handle filters from the request
         $search = strtolower($request->get('search', ''));
         $industry = strtolower($request->get('industry', ''));
         $jobType = strtolower($request->get('job_type', ''));
 
-        // Apply search filters
         $recommendations = array_filter($recommendations, function ($rec) use ($search, $industry, $jobType) {
             $title = strtolower($rec['job_title'] ?? '');
             $company = strtolower($rec['company'] ?? '');
@@ -71,21 +62,14 @@ class JobController extends Controller
             return $matchSearch && $matchIndustry && $matchType;
         });
 
-        // Sort by final score (descending)
         usort($recommendations, fn($a, $b) => $b['final_score'] <=> $a['final_score']);
 
-        // Return the view with recommendations
         return view('alumni.portal.jobs.job-page', compact('recommendations'));
     }
 
-    /**
-     * Display a single job post with its details.
-     */
     public function show($id)
     {
-        $job = JobDetail::with(['industry', 'skills'])
-            ->where('job_id', $id)
-            ->first();
+        $job = JobDetail::with(['industry', 'skills'])->where('job_id', $id)->first();
 
         if (!$job) {
             abort(404, 'Job not found');
