@@ -16,8 +16,7 @@ class JobController extends Controller
         $recommendations = [];
 
         try {
-            // Use the Python path from .env
-            $pythonPath = env('PYTHON_PATH'); 
+            $pythonPath = env('PYTHON_PATH', '/usr/bin/python3');
             $scriptPath = base_path('ml/recommend_jobs.py');
 
             $command = escapeshellcmd("$pythonPath \"$scriptPath\" $userId");
