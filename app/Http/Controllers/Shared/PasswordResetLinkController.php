@@ -10,6 +10,7 @@ use App\Models\PasswordOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
 
 class PasswordResetLinkController extends Controller
 {
@@ -25,16 +26,22 @@ class PasswordResetLinkController extends Controller
 
     public function sendOtp(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate([
+            'email' => 'required|email'
+        ]);
 
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             if ($request->expectsJson()) {
-                return response()->json(['success' => false, 'message' => 'No account found with that email.']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No account found with that email.'
+                ]);
             }
             return back()->withErrors(['email' => 'No account found with that email.']);
         }
 
+        // Generate OTP and save hashed version
         $otp = rand(1000, 9999);
         $otpHash = Hash::make($otp);
 
@@ -43,12 +50,48 @@ class PasswordResetLinkController extends Controller
             ['otp_hash' => $otpHash, 'expires_at' => now()->addMinutes(10)]
         );
 
-        Mail::to($user->email)->send(new SendOtpMail($otp));
+        // Send OTP via Brevo HTTP API
+        try {
+            $response = Http::withHeaders([
+                'accept' => 'application/json',
+                'api-key' => env('BREVO_API_KEY'),
+                'Content-Type' => 'application/json'
+            ])->post('https://api.brevo.com/v3/smtp/email', [
+                'sender' => [
+                    'name' => env('MAIL_FROM_NAME'),
+                    'email' => env('MAIL_FROM_ADDRESS')
+                ],
+                'to' => [
+                    ['email' => $user->email, 'name' => $user->name ?? $user->email]
+                ],
+                'subject' => 'Your OTP Code',
+                'htmlContent' => "<p>Your OTP code is: <strong>{$otp}</strong></p>"
+            ]);
 
+            \Log::info('Brevo response status: ' . $response->status());
+            \Log::info('Brevo response body: ' . $response->body());
+
+
+            if (!$response->successful()) {
+                return back()->withErrors([
+                    'email' => 'Failed to send OTP. Please check your Brevo API key or try again later.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Brevo request failed: ' . $e->getMessage());
+            return back()->withErrors([
+                'email' => 'Failed to send OTP. Please try again later.'
+            ]);
+        }
+
+        // Save email to session
         session(['email' => $user->email]);
 
         if ($request->expectsJson()) {
-            return response()->json(['success' => true, 'message' => 'Verification code resent!']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification code sent!'
+            ]);
         }
 
         return redirect()->route('verification.form')->with('email', $user->email);

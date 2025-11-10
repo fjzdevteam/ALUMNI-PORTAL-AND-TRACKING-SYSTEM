@@ -39,6 +39,20 @@ use App\Http\Controllers\Shared\ChangePasswordController;
 
 use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/test-mail', function () {
+    try {
+        Mail::raw('This is a test email from Brevo SMTP.', function ($message) {
+            $message->to('yourpersonalemail@gmail.com')
+                ->subject('Brevo SMTP Test');
+        });
+        return '✅ Email sent successfully!';
+    } catch (\Exception $e) {
+        return '❌ Error: ' . $e->getMessage();
+    }
+});
+
 // ERRORS ROUTE
 Route::view('/admin/401', 'errors.admin-401')->name('admin.401');
 Route::view('/admin/403', 'errors.admin-403')->name('admin.403');
