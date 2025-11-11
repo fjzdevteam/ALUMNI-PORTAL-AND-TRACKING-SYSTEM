@@ -3,8 +3,14 @@ import sys
 import json
 import pandas as pd
 import sqlalchemy
+from dotenv import load_dotenv
+from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+
+# Load Laravel .env
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(env_path)
 
 if len(sys.argv) < 2:
     print(json.dumps({"error": "No user ID provided"}))
@@ -14,16 +20,17 @@ user_id = sys.argv[1]
 # ✅ Get DB credentials from environment (.env)
 db_host = os.getenv("DB_HOST", "127.0.0.1")
 db_port = os.getenv("DB_PORT", "3306")
-db_name = os.getenv("DB_DATABASE", "alumnidb")
+db_name = os.getenv("DB_DATABASE", "alumni")
 db_user = os.getenv("DB_USERNAME", "root")
 db_pass = os.getenv("DB_PASSWORD", "")
 
 try:
-    engine = sqlalchemy.create_engine("mysql+mysqlconnector://forge:BYLlSdkCzzH6Yp4HbdCr@127.0.0.1/alumni")
+    engine = sqlalchemy.create_engine(
+        f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
+    )
 except Exception as e:
     print(json.dumps({"error": f"Database connection failed: {e}"}))
     sys.exit()
-
 
 alumni_query = """
 SELECT s.name AS skill
@@ -75,6 +82,7 @@ tfidf_matrix = tfidf.fit_transform([alumni_text] + job_texts)
 jobs_df["cosine_similarity"] = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
 
 alumni_set = set([s.lower() for s in alumni_df["skill"].tolist()])
+
 def clean_skill_set(text):
     return set([s.strip().lower() for s in text.split(",") if s.strip()])
 
