@@ -19,9 +19,7 @@ db_user = os.getenv("DB_USERNAME", "root")
 db_pass = os.getenv("DB_PASSWORD", "")
 
 try:
-    engine = sqlalchemy.create_engine(
-        f"mysql+mysqlconnector://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
-    )
+    engine = sqlalchemy.create_engine("mysql+mysqlconnector://forge:BYLlSdkCzzH6Yp4HbdCr@127.0.0.1/alumni")
 except Exception as e:
     print(json.dumps({"error": f"Database connection failed: {e}"}))
     sys.exit()
