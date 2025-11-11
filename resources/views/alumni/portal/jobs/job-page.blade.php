@@ -1,3 +1,7 @@
+<h3>Debug Recommendations:</h3>
+<pre>{{ json_encode($recommendations, JSON_PRETTY_PRINT) }}</pre>
+
+
 <x-app-layout :title="'Jobs'" :navType="'alumni'">
     <x-slot name="header">
         <h2 class="flex items-center gap-2 font-bold text-xl md:text-4xl text-gray-800 leading-tight">
