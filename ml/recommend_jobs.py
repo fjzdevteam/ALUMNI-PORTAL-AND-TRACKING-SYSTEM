@@ -8,16 +8,15 @@ from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load Laravel .env
 env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(env_path)
 
 if len(sys.argv) < 2:
     print(json.dumps({"error": "No user ID provided"}))
     sys.exit()
+
 user_id = sys.argv[1]
 
-# ✅ Get DB credentials from environment (.env)
 db_host = os.getenv("DB_HOST", "127.0.0.1")
 db_port = os.getenv("DB_PORT", "3306")
 db_name = os.getenv("DB_DATABASE", "alumni")
@@ -66,6 +65,7 @@ except Exception as e:
 if alumni_df.empty:
     print(json.dumps({"error": "No skills found for this alumni."}))
     sys.exit()
+
 if jobs_df.empty:
     print(json.dumps({"error": "No job listings found."}))
     sys.exit()
@@ -87,12 +87,16 @@ def clean_skill_set(text):
     return set([s.strip().lower() for s in text.split(",") if s.strip()])
 
 jobs_df["overlap_ratio"] = jobs_df["job_skills"].apply(
-    lambda x: len(alumni_set.intersection(clean_skill_set(x))) / len(clean_skill_set(x)) if clean_skill_set(x) else 0
+    lambda x: len(alumni_set.intersection(clean_skill_set(x))) / len(clean_skill_set(x))
+    if clean_skill_set(x) else 0
 )
 
 OVERLAP_WEIGHT = 0.6
 COSINE_WEIGHT = 0.4
-jobs_df["final_score"] = (OVERLAP_WEIGHT * jobs_df["overlap_ratio"]) + (COSINE_WEIGHT * jobs_df["cosine_similarity"])
+jobs_df["final_score"] = (
+    OVERLAP_WEIGHT * jobs_df["overlap_ratio"]
+    + COSINE_WEIGHT * jobs_df["cosine_similarity"]
+)
 jobs_df["final_score"] = jobs_df["final_score"].clip(upper=1.0)
 jobs_df["final_score_pct"] = (jobs_df["final_score"] * 100).round(2)
 
