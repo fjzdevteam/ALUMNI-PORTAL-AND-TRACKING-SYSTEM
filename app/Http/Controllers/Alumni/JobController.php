@@ -16,12 +16,13 @@ class JobController extends Controller
     $recommendations = [];
 
     try {
-        $pythonPath = env('PYTHON_PATH', 'python'); // local: python, forge: venv path
-        $scriptPath = base_path('ml/recommend_jobs.py');
+$pythonPath = env('PYTHON_PATH', '/home/forge/plp-alumni-system.on-forge.com/shared/venv/bin/python3');
+$scriptPath = base_path('ml/recommend_jobs.py');
+$command = escapeshellcmd("$pythonPath \"$scriptPath\" $userId");
+Log::info("ML command: $command");
+$output = shell_exec($command);
+Log::info("ML output: $output");
 
-        // Run Python script
-        $command = escapeshellcmd("$pythonPath \"$scriptPath\" $userId");
-        $output = shell_exec($command);
 
         // Trim output and decode JSON
         $output = trim($output);
