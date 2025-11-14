@@ -76,7 +76,7 @@
                     @forelse($jobs as $job)
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3 text-center">{{ $job->job_id }}</td>
-                            <td class="p-3 font-medium text-gray-800 truncate">{{ $job->job_title }}</td>
+                            <td class="p-3 font-medium text-gray-800">{{ $job->job_title }}</td>
                             <td class="p-3">{{ $job->industry->industry_name ?? 'N/A' }}</td>
                             <td class="p-3">{{ $job->company }}</td>
                             <td class="p-3">{{ $job->location }}</td>
