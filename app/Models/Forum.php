@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $topic_title
+ * @property int $category_id
+ * @property string $content
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
+
 class Forum extends Model
 {
     use HasFactory, SoftDeletes;

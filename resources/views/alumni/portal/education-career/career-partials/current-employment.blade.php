@@ -49,6 +49,14 @@
             </div>
         </div>
 
+        <div class="flex mt-5 rounded">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="visible" value="1"
+                    {{ old('visible', $user->currentEmployment->visible ?? false) ? 'checked' : '' }}>
+                <span class="font-medium text-sm">Make this employment visible to other alumni?</span>
+            </label>
+        </div>
+
         <div class="flex justify-end mt-3 gap-4">
             <x-primary-button type="submit" id="current-save-btn"
                 x-bind:disabled="employmentStatus === 'unemployed'">Save</x-primary-button>

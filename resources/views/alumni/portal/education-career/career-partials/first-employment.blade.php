@@ -76,6 +76,14 @@
                     value="{{ old('end_date', optional($user->firstEmployment)->end_date ? $user->firstEmployment->end_date->format('Y-m-d') : '') }}">
                 </x-text-input>
             </div>
+
+            <div class="flex mt-2 rounded">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="visible" value="1"
+                        {{ old('visible', $user->firstEmployment->visible ?? false) ? 'checked' : '' }}>
+                    <span class="font-medium text-sm">Make this employment visible to other alumni?</span>
+                </label>
+            </div>
         </div>
 
         <div class="flex justify-end mt-3 gap-4">

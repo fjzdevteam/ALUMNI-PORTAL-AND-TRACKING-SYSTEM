@@ -1,7 +1,7 @@
 <div class="bg-white rounded-lg shadow p-6 my-6">
     <h2 class="block text-lg font-semibold text-gray-800">Career History</h2>
     <p class="text-sm text-plp-green mb-6">
-        Note: Add jobs you've had after your first job. Leave this blank if you're still in your first or current job
+        Note: Add a job you've had after your first job. Leave this blank if you're still in your first or current job
         only.
     </p>
 
@@ -51,6 +51,14 @@
                 <x-text-input name="inclusive_years"
                     value="{{ old('inclusive_years', $user->pastEmployment->inclusive_years ?? 'N/A') }}">
                 </x-text-input>
+            </div>
+
+            <div class="flex mt-2 rounded">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="visible" value="1"
+                        {{ old('visible', $user->pastEmployment->visible ?? false) ? 'checked' : '' }}>
+                    <span class="font-medium text-sm">Make this employment visible to other alumni?</span>
+                </label>
             </div>
         </div>
 

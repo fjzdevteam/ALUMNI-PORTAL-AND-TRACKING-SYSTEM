@@ -125,9 +125,9 @@ class ForumController extends Controller
             'basicDetails',
             'education.course',
             'skills',
-            'firstEmployment',
-            'currentEmployment',
-            'pastEmployment'
+            'firstEmployment' => fn($q) => $q->where('visible', true),
+            'currentEmployment' => fn($q) => $q->where('visible', true),
+            'pastEmployment' => fn($q) => $q->where('visible', true),
         ])->findOrFail($id);
 
         return view('alumni.portal.alumni-forum.view-profile', compact('alumni'));

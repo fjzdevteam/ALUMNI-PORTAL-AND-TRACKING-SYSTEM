@@ -75,20 +75,18 @@ class CareerController extends Controller
             'end_date' => 'nullable|date',
         ]);
 
-        AlumniFirstEmployment::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'company_name' => $validated['company_name'] ?? null,
-                'position_title' => $validated['position_title'] ?? null,
-                'location_id' => $validated['location'] ?? null,
-                'industry_id' => $validated['industry'] ?? null,
-                'job_alignment' => $validated['job_alignment'] ?? null,
-                'job_type' => $validated['job_type'] ?? null,
-                'waiting_period' => $validated['waiting_period'] ?? null,
-                'start_date' => $validated['start_date'] ?? null,
-                'end_date' => $validated['end_date'] ?? null,
-            ]
-        );
+        $employment = AlumniFirstEmployment::firstOrNew(['user_id' => $user->id]);
+        $employment->company_name = $validated['company_name'] ?? null;
+        $employment->position_title = $validated['position_title'] ?? null;
+        $employment->location_id = $validated['location'] ?? null;
+        $employment->industry_id = $validated['industry'] ?? null;
+        $employment->job_alignment = $validated['job_alignment'] ?? null;
+        $employment->job_type = $validated['job_type'] ?? null;
+        $employment->waiting_period = $validated['waiting_period'] ?? null;
+        $employment->start_date = $validated['start_date'] ?? null;
+        $employment->end_date = $validated['end_date'] ?? null;
+        $employment->visible = $request->has('visible'); // ✅ handle unchecked
+        $employment->save();
 
         return redirect()->back()->with('success', 'Career information updated successfully.');
     }
@@ -105,16 +103,14 @@ class CareerController extends Controller
             'start_date' => 'nullable|date',
         ]);
 
-        AlumniCurrentEmployment::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'company_name' => $validated['company_name'] ?? null,
-                'position_title' => $validated['position_title'] ?? null,
-                'location_id' => $validated['location'] ?? null,
-                'industry_id' => $validated['industry'] ?? null,
-                'start_date' => $validated['start_date'] ?? null,
-            ]
-        );
+        $employment = AlumniCurrentEmployment::firstOrNew(['user_id' => $user->id]);
+        $employment->company_name = $validated['company_name'] ?? null;
+        $employment->position_title = $validated['position_title'] ?? null;
+        $employment->location_id = $validated['location'] ?? null;
+        $employment->industry_id = $validated['industry'] ?? null;
+        $employment->start_date = $validated['start_date'] ?? null;
+        $employment->visible = $request->has('visible'); // ✅ handle unchecked
+        $employment->save();
 
         return redirect()->back()->with('success', 'Career information updated successfully.');
     }
@@ -132,17 +128,15 @@ class CareerController extends Controller
             'inclusive_years' => 'nullable|string|max:255',
         ]);
 
-        AlumniPastEmployment::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'company_name' => $validated['company_name'] ?? null,
-                'position_title' => $validated['position_title'] ?? null,
-                'location_id' => $validated['location'] ?? null,
-                'job_type' => $validated['job_type'] ?? null,
-                'industry_id' => $validated['industry'] ?? null,
-                'inclusive_years' => $validated['inclusive_years'] ?? null,
-            ]
-        );
+        $employment = AlumniPastEmployment::firstOrNew(['user_id' => $user->id]);
+        $employment->company_name = $validated['company_name'] ?? null;
+        $employment->position_title = $validated['position_title'] ?? null;
+        $employment->location_id = $validated['location'] ?? null;
+        $employment->job_type = $validated['job_type'] ?? null;
+        $employment->industry_id = $validated['industry'] ?? null;
+        $employment->inclusive_years = $validated['inclusive_years'] ?? null;
+        $employment->visible = $request->has('visible'); // ✅ handle unchecked
+        $employment->save();
 
         return redirect()->back()->with('success', 'Career information updated successfully.');
     }
