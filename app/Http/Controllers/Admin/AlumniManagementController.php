@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AlumniInformation;
 use App\Traits\AuditLogTrait;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +77,53 @@ class AlumniManagementController extends Controller
         ]);
     }
 
+    public function showAlumniRecords(Request $request)
+    {
+        $query = AlumniInformation::with('course');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                    ->orWhere('middle_name', 'LIKE', "%{$search}%")
+                    ->orWhere('last_name', 'LIKE', "%{$search}%")
+                    ->orWhere('birthdate', 'LIKE', "%{$search}%")
+                    ->orWhereRaw("DATE_FORMAT(birthdate, '%M %e %Y') LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("DATE_FORMAT(birthdate, '%b %e %Y') LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("DATE_FORMAT(birthdate, '%M %e') LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("DATE_FORMAT(birthdate, '%b %e') LIKE ?", ["%{$search}%"]);
+            });
+        }
+
+        if ($request->filled('degree')) {
+            $degree = strtoupper($request->degree);
+            $query->whereHas('course', function ($q) use ($degree) {
+                $q->where('course_code', $degree)
+                    ->orWhere('course_name', 'LIKE', "%{$degree}%");
+            });
+        }
+
+        // ✅ New sex filter
+        if ($request->filled('sex')) {
+            $query->where('sex', $request->sex);
+        }
+
+        $alumni = $query->orderBy('last_name')->paginate(10);
+
+        $degrees = \App\Models\Course::orderBy('course_name')
+            ->pluck('course_name', 'course_code');
+
+        return view('admin.portal.alumni.alumni-records', [
+            'alumni' => $alumni,
+            'search' => $request->search,
+            'degree' => $request->degree,
+            'sex' => $request->sex,
+            'degrees' => $degrees,
+        ]);
+    }
+
+
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -92,6 +140,22 @@ class AlumniManagementController extends Controller
 
         return redirect()
             ->route('alumni.management')
+            ->with('success', 'Alumni has been deleted successfully.');
+    }
+
+    public function deleteAlumniRecord($id)
+    {
+        $alumni = AlumniInformation::findOrFail($id);
+
+        $alumni->delete();
+
+        $this->addAuditLog(
+            "Deleted Alumni Record: {$alumni->first_name} {$alumni->last_name} (ID: {$alumni->id})",
+            Auth::id()
+        );
+
+        return redirect()
+            ->route('alumni.records')
             ->with('success', 'Alumni has been deleted successfully.');
     }
 

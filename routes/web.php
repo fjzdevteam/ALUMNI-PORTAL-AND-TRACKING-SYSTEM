@@ -39,20 +39,6 @@ use App\Http\Controllers\Shared\ChangePasswordController;
 
 use Illuminate\Support\Facades\Route;
 
-use Illuminate\Support\Facades\Mail;
-
-Route::get('/check-key', function () {
-    dd(config('services.brevo.key'));
-});
-
-Route::get('/check-name', function () {
-    dd(config('services.brevo.name'));
-});
-
-Route::get('/check-email', function () {
-    dd(config('services.brevo.email'));
-});
-
 // ERRORS ROUTE
 Route::view('/admin/401', 'errors.admin-401')->name('admin.401');
 Route::view('/admin/403', 'errors.admin-403')->name('admin.403');
@@ -75,6 +61,7 @@ Route::get('/', function () {
 
     return view('alumni.welcome');
 })->name('welcome');
+
 
 // ALUMNI ROUTE
 Route::middleware(['alumni'])->prefix('alumni')->group(function () {
@@ -189,8 +176,10 @@ Route::middleware(['admin'])->prefix('admin')->group(function () {
 
     Route::prefix('alumni-management')->group(function () {
         Route::get('/', [AlumniManagementController::class, 'index'])->name('alumni.management');
+        Route::get('/alumni-records', [AlumniManagementController::class, 'showAlumniRecords'])->name('alumni.records');
         Route::get('{id}', [AlumniManagementController::class, 'show'])->name('alumni.view');
         Route::delete('{id}', [AlumniManagementController::class, 'destroy'])->name('alumni.management.destroy');
+        Route::delete('{id}/delete-record', [AlumniManagementController::class, 'deleteAlumniRecord'])->name('alumni.records.destroy');
         Route::get('export/csv', [AlumniManagementController::class, 'exportCSV'])->name('alumni.management.export');
     });
 

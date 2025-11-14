@@ -15,13 +15,14 @@
 
     <div class="grid grid-cols-2 gap-4 mb-4">
         <div class="col-span-1">
-            <a class="block text-white text-center bg-plp-green h-full shadow rounded p-2"
+            <a class="block text-center bg-neutral-300 h-full shadow rounded p-2"
                 href="{{ route('alumni.management') }}">
                 Registered Alumni
             </a>
         </div>
         <div class="col-span-1">
-            <a class="block text-center bg-neutral-300 h-full shadow rounded p-2" href="{{ route('alumni.records') }}">
+            <a class="block text-center text-white bg-plp-green h-full shadow rounded p-2"
+                href="{{ route('alumni.records') }}">
                 Alumni Records
             </a>
         </div>
@@ -35,7 +36,7 @@
     @endif
 
     <x-filter title="Alumni Filters" :formId="'filterForm'">
-        <form id="filterForm" method="GET" action="{{ route('alumni.management') }}" class="contents">
+        <form id="filterForm" method="GET" action="{{ route('alumni.records') }}" class="contents">
             <div class="relative w-full col-span-3 flex items-center">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500" fill="none"
@@ -45,14 +46,15 @@
                     </svg>
                 </div>
                 <input id="searchInput" type="text" name="search" value="{{ request('search') }}" autocomplete="off"
-                    placeholder="Search alumni by name, email, industry, or employment status..."
+                    placeholder="Search alumni by name or birthdate..."
                     class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500 text-sm md:text-base" />
             </div>
 
-            <x-select-input class="col-span-2" name="year_graduated" :options="collect(['' => 'All Year Graduated'])
-                ->union($years->mapWithKeys(fn($y) => [$y => $y]))
-                ->toArray()"
-                selected="{{ request('year_graduated') }}" />
+            <x-select-input class="col-span-2" name="sex" :options="[
+                '' => 'All Sex',
+                'Male' => 'Male',
+                'Female' => 'Female',
+            ]" selected="{{ request('sex') }}" />
 
             <x-select-input class="col-span-2" name="degree" :options="collect(['' => 'All Degree'])
                 ->union($degrees->toArray())
@@ -61,7 +63,7 @@
     </x-filter>
 
     <x-white-card class="p-6 mb-4" id="alumniTableContainer">
-        <h3 class="text-3xl font-bold">Registered Alumni</h3>
+        <h3 class="text-3xl font-bold">Alumni Records</h3>
         <p class="text-base text-gray-700 mb-4">
             Showing {{ $alumni->count() }} of {{ $alumni->total() }} alumni
         </p>
@@ -71,27 +73,26 @@
                 <tr>
                     <th class="p-2">ID</th>
                     <th class="p-2">Name</th>
-                    <th class="p-2">Email</th>
-                    <th class="p-2">Industry</th>
-                    <th class="p-2">Degree</th>
-                    <th class="p-2">Year Graduated</th>
-                    <th class="p-2">Employment</th>
-                    <th class="p-2">Actions</th>
+                    <th class="p-2">Sex</th>
+                    <th class="p-2">Birthdate</th>
+                    <th class="p-2">Course</th>
+                    <th class="p-2 text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
                 @forelse($alumni as $a)
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-2">{{ $a->id }}</td>
-                        <td class="p-2">{{ $a->first_name ?? '' }} {{ $a->middle_name ?? '' }}
-                            {{ $a->last_name ?? '' }} {{ $a->suffix ?? '' }}</td>
-                        <td class="p-2">{{ $a->email }}</td>
-                        <td class="p-2">{{ $a->firstEmployment->industry->industry_name ?? 'N/A' }}</td>
-                        <td class="p-2">{{ $a->education->course->course_name ?? 'N/A' }}</td>
-                        <td class="p-2">{{ $a->education->year_graduated ?? 'N/A' }}</td>
-                        <td class="p-2">{{ ucfirst($a->basicDetails->employment_status ?? 'N/A') }}</td>
+                        <td class="p-2">{{ $a->last_name ?? '' }} {{ $a->first_name ?? '' }}
+                            {{ $a->middle_name ?? '' }} {{ $a->suffix ?? '' }}</td>
+                        <td class="p-2">{{ ucfirst($a->sex) }}</td>
+                        <td class="p-2">{{ \Carbon\Carbon::parse($a->birthdate)->format('F j, Y') }}</td>
+                        <td class="p-2">{{ $a->course->course_name ?? 'N/A' }}</td>
                         <td class="p-2">
-                            <x-action-buttons :viewRoute="route('alumni.view', $a->id)" :deleteRoute="route('alumni.management.destroy', $a->id)" itemName="alumni" />
+                            <div class="flex justify-center">
+                                <x-action-buttons :viewRoute="null" :deleteRoute="route('alumni.records.destroy', $a->id)"
+                                    itemName="alumni record"></x-action-buttons>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -111,28 +112,12 @@
         </div>
     </x-white-card>
 
-    <div class="bg-white border border-gray-200 rounded-lg p-6 pb-6 mb-7 shadow-sm">
-        <h3 class="font-bold text-2xl mb-1 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 me-2" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 15V3" />
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <path d="m7 10 5 5 5-5" />
-            </svg>
-            Export
-        </h3>
-        <p>Export alumni records</p>
-        <div class="flex space-x-4 mt-4">
-            <x-export-button :href="route('alumni.management.export')">Export CSV</x-export-button>
-        </div>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('filterForm'),
                 searchInput = document.getElementById('searchInput'),
                 tableContainer = document.getElementById('alumniTableContainer'),
-                route = `{{ route('alumni.management') }}`;
+                route = `{{ route('alumni.records') }}`;
             let timer;
 
             const fetchTable = async () => {

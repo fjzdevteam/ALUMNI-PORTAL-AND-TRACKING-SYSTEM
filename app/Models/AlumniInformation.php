@@ -56,21 +56,21 @@ class AlumniInformation extends Model
     ];
 
 
-    // ✅ One alumnus has one basic details record
     public function basicDetails()
     {
         return $this->hasOne(AlumniBasicDetails::class, 'user_id', 'id');
     }
 
-
-    // ✅ One alumnus has one education record
     public function education()
     {
         return $this->hasOne(AlumniEducation::class, 'user_id', 'id');
     }
 
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'course_id');
+    }
 
-    // ✅ One alumnus has one current employment record
     public function employment()
     {
         return $this->hasOne(AlumniCurrentEmployment::class, 'user_id', 'id');
