@@ -62,7 +62,7 @@
                             <td class="border border-gray-300 px-3 py-2">Jr.</td>
                             <td class="border border-gray-300 px-3 py-2">male</td>
                             <td class="border border-gray-300 px-3 py-2">BSIT</td>
-                            <td class="border border-gray-300 px-3 py-2">1998-05-15</td>
+                            <td class="border border-gray-300 px-3 py-2">5/2/2003</td>
                         </tr>
                     </tbody>
                 </table>
@@ -73,7 +73,7 @@
                 <ul class="list-disc list-inside text-sm mt-2 space-y-1">
                     <li><strong>Suffix:</strong> Leave blank if not applicable (e.g., Jr., Sr., II, III, IV)</li>
                     <li><strong>Sex:</strong> Use "male" or "female" only</li>
-                    <li><strong>Birthday:</strong> Use YYYY-MM-DD format (e.g., 2004-06-09)</li>
+                    <li><strong>Birthday:</strong> Use DD/MM/YYYY format (e.g., 9/6/2004)</li>
                     <li>
                         <strong>Course:</strong> must be one of the following exactly:<br>
                         <span class="block text-gray-600 mt-1 ml-4">
