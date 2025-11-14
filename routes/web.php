@@ -80,6 +80,7 @@ Route::middleware(['alumni'])->prefix('alumni')->group(function () {
         Route::post('update-about', [ProfileController::class, 'updateAbout'])->name('alumni.profile.update.about');
         Route::get('search-skills', [ProfileController::class, 'searchSkills'])->name('alumni.profile.search.skills');
         Route::post('update-alumni-skills', [ProfileController::class, 'updateAlumniSkills'])->name('alumni.profile.update.skills');
+        Route::post('visibility', [ProfileController::class, 'updateExperienceVisibility'])->name('alumni.profile.update.visibility');
     });
 
     Route::prefix('education')->group(function () {

@@ -83,17 +83,22 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'about' => 'nullable|string|max:1000',
+            'facebook_link' => 'nullable|url|max:255',
+            'linkedin_link' => 'nullable|url|max:255',
         ]);
 
         AlumniBasicDetails::updateOrCreate(
             ['user_id' => $user->id],
             [
                 'about' => $validated['about'] ?? null,
+                'facebook_link' => $validated['facebook_link'] ?? null,
+                'linkedin_link' => $validated['linkedin_link'] ?? null,
             ]
         );
 
         return back()->with('success', 'About section updated successfully!');
     }
+
 
     public function searchSkills(Request $request)
     {

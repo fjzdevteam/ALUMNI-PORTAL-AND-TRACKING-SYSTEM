@@ -140,17 +140,42 @@
                 <p class="mt-1 text-sm text-gray-600 mb-4">
                     Let us get to know you better — write something about yourself.
                 </p>
+
                 <form method="POST" action="{{ route('alumni.profile.update.about') }}">
                     @csrf
+
+                    {{-- About Text --}}
                     <textarea name="about" rows="5"
                         class="text-sm md:text-base w-full border border-gray-300 rounded-md p-2 focus:border-green-500 focus:ring-green-500 shadow-sm"
                         placeholder="Share something about yourself">{{ $details->about ?? '' }}</textarea>
+
+                    {{-- Social Media Note --}}
+                    <p class="text-xs text-gray-500 mt-3">
+                        Optional: Add your social media links below.
+                        <strong>Note: If you add a link, it will be visible to other alumni.</strong>
+                    </p>
+
+                    {{-- Facebook Link --}}
+                    <div class="mt-4">
+                        <x-input-label :value="__('Facebook Profile Link')" />
+                        <x-text-input name="facebook_link" placeholder="https://facebook.com/yourprofile"
+                            value="{{ $details->facebook_link ?? '' }}" />
+                    </div>
+
+                    {{-- LinkedIn Link --}}
+                    <div class="mt-4">
+                        <x-input-label :value="__('LinkedIn Profile Link')" />
+                        <x-text-input name="linkedin_link" placeholder="https://linkedin.com/in/yourprofile"
+                            value="{{ $details->linkedin_link ?? '' }}" />
+                    </div>
+
                     <div class="flex justify-end gap-3 mt-4">
                         <x-primary-button type="submit">Update</x-primary-button>
                     </div>
                 </form>
             </x-white-card>
         </div>
+
 
         <div class="col-span-full order-4 md:order-4">
             <x-white-card class="p-6">

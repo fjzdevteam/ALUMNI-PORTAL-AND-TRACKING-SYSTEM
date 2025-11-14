@@ -66,6 +66,8 @@ class AlumniBasicDetails extends Model
         'mobile_number',
         'address',
         'about',
+        'facebook_link',
+        'linkedin_link',
     ];
 
 

@@ -6,15 +6,16 @@
             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
-        <span class="hover:border-black pb-0.5 transition-all duration-200">
-            Back to Alumni List
-        </span>
+        <span class="hover:border-black pb-0.5 transition-all duration-200">Back to Alumni List</span>
     </a>
 
     <div class="gap-6 py-6">
+
+        {{-- HEADER --}}
         <x-white-card class="flex flex-col sm:flex-row items-center sm:items-start py-10 px-6 sm:px-10 gap-6 sm:gap-8">
             <img src="{{ $alumni->image_path ? asset('storage/' . $alumni->image_path) : asset('images/default-profile.png') }}"
                 alt="{{ $alumni->first_name }}" class="w-24 h-24 rounded-full object-cover">
+
             <div class="flex flex-col gap-2 text-center sm:text-left">
                 <h2 class="font-bold text-2xl sm:text-3xl">{{ $alumni->first_name }} {{ $alumni->last_name }}</h2>
                 <p class="text-base text-gray-600">
@@ -27,102 +28,113 @@
         </x-white-card>
 
         <div class="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-3 mt-4">
+
+            {{-- SOCIAL MEDIA --}}
             <x-white-card class="p-6">
-                <h1 class="mb-4 font-bold text-lg">Contact</h1>
+                <h1 class="mb-4 font-bold text-lg">Social Media</h1>
 
-                @if ($alumni->email)
-                    <p class="flex gap-3 text-sm mb-2 break-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                            <rect x="2" y="4" width="20" height="16" rx="2" />
-                        </svg>
-                        {{ $alumni->email }}
-                    </p>
-                @endif
+                <div class="flex flex-col gap-3">
 
-                @if ($alumni->basicDetails && $alumni->basicDetails->mobile_number)
-                    <p class="flex gap-3 text-sm mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path
-                                d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
-                        </svg>
-                        {{ $alumni->basicDetails->mobile_number }}
-                    </p>
-                @endif
+                    {{-- FACEBOOK --}}
+                    @if ($alumni->basicDetails && $alumni->basicDetails->facebook_link)
+                        <a href="{{ $alumni->basicDetails->facebook_link }}" target="_blank"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-blue-600" fill="currentColor"
+                                viewBox="0 0 24 24">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                            </svg>
+                            <span class="font-medium text-blue-700">Facebook</span>
+                        </a>
+                    @endif
 
-                @if ($alumni->basicDetails && $alumni->basicDetails->linkedin)
-                    <p class="flex gap-3 text-sm mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect width="4" height="12" x="2" y="9" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg>
-                        <a href="{{ $alumni->basicDetails->linkedin }}" target="_blank"
-                            class="truncate hover:underline">LinkedIn Profile</a>
-                    </p>
-                @endif
+                    {{-- LINKEDIN --}}
+                    @if ($alumni->basicDetails && $alumni->basicDetails->linkedin_link)
+                        <a href="{{ $alumni->basicDetails->linkedin_link }}" target="_blank"
+                            class="flex items-center gap-3 px-3 py-2 rounded-lg bg-sky-50 hover:bg-sky-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-sky-700" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <circle cx="4" cy="4" r="2" />
+                                <rect width="4" height="12" x="2" y="9" />
+                                <path
+                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                            </svg>
+                            <span class="font-medium text-sky-800">LinkedIn</span>
+                        </a>
+                    @endif
 
-                @if ($alumni->basicDetails && $alumni->basicDetails->website)
-                    <p class="flex gap-3 text-sm mb-2 break-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                            <path d="M2 12h20" />
-                        </svg>
-                        <a href="{{ $alumni->basicDetails->website }}" target="_blank"
-                            class="truncate hover:underline">Personal Website</a>
-                    </p>
-                @endif
+                    {{-- NONE --}}
+                    @if (
+                        !($alumni->basicDetails && $alumni->basicDetails->facebook_link) &&
+                            !($alumni->basicDetails && $alumni->basicDetails->linkedin_link))
+                        <p class="text-gray-500 text-sm italic">No social media links to show.</p>
+                    @endif
+
+                </div>
             </x-white-card>
 
             <div>
-                @if ($alumni->basicDetails && $alumni->basicDetails->about)
-                    <x-white-card class="mb-4 p-6">
-                        <h1 class="font-bold mb-3">About</h1>
-                        <p>{{ $alumni->basicDetails->about }}</p>
-                    </x-white-card>
-                @endif
 
+                {{-- ABOUT --}}
                 <x-white-card class="mb-4 p-6">
-                    <h1 class="font-bold mb-3">Experience</h1>
+                    <h1 class="font-bold mb-3">About</h1>
 
-                    @if ($alumni->firstEmployment)
-                        <div class="mb-4 border-l-4 border-green-600 pl-3">
-                            <h3 class="text-plp-green">{{ $alumni->firstEmployment->position_title }}</h3>
-                            <p>{{ $alumni->firstEmployment->company_name }}</p>
-                            <p>{{ $alumni->firstEmployment->start_date?->format('Y') }} -
-                                {{ $alumni->firstEmployment->end_date?->format('Y') ?? 'Present' }}</p>
-                        </div>
+                    @if ($alumni->basicDetails && $alumni->basicDetails->about)
+                        <p>{{ $alumni->basicDetails->about }}</p>
+                    @else
+                        <p class="text-gray-500 text-sm italic">No about information available.</p>
                     @endif
-
-                    @if ($alumni->currentEmployment)
-                        <div class="mb-4 border-l-4 border-green-600 pl-3">
-                            <h3 class="text-plp-green">{{ $alumni->currentEmployment->position_title }}</h3>
-                            <p>{{ $alumni->currentEmployment->company_name }}</p>
-                            <p>{{ $alumni->currentEmployment->start_date?->format('Y') }} - Present</p>
-                        </div>
-                    @endif
-
-                    @foreach ($alumni->pastEmployments ?? [] as $past)
-                        <div class="mb-4 border-l-4 border-green-600 pl-3">
-                            <h3 class="text-plp-green">{{ $past->position_title }}</h3>
-                            <p>{{ $past->company_name }}</p>
-                            <p>{{ $past->inclusive_years }}</p>
-                        </div>
-                    @endforeach
                 </x-white-card>
 
-                @if ($alumni->skills->count())
-                    <x-white-card class="p-6">
-                        <h1 class="font-bold mb-3">Skills</h1>
+                {{-- EXPERIENCE --}}
+                <x-white-card class="mb-4 p-6">
+                    <h1 class="font-bold mb-3 text-lg">Experience</h1>
+
+                    @php
+                        $hasExperience =
+                            $alumni->firstEmployment ||
+                            $alumni->currentEmployment ||
+                            ($alumni->pastEmployments && count($alumni->pastEmployments) > 0);
+                    @endphp
+
+                    @if ($hasExperience)
+
+                        {{-- FIRST EMPLOYMENT --}}
+                        @if ($alumni->firstEmployment)
+                            <div class="mb-4 border-l-4 border-green-600 pl-3">
+                                <h3 class="text-plp-green">{{ $alumni->firstEmployment->position_title }}</h3>
+                                <p>{{ $alumni->firstEmployment->company_name }}</p>
+                                <p>{{ $alumni->firstEmployment->start_date?->format('Y') }} -
+                                    {{ $alumni->firstEmployment->end_date?->format('Y') ?? 'Present' }}</p>
+                            </div>
+                        @endif
+
+                        {{-- CURRENT EMPLOYMENT --}}
+                        @if ($alumni->currentEmployment)
+                            <div class="mb-4 border-l-4 border-green-600 pl-3">
+                                <h3 class="text-plp-green">{{ $alumni->currentEmployment->position_title }}</h3>
+                                <p>{{ $alumni->currentEmployment->company_name }}</p>
+                                <p>{{ $alumni->currentEmployment->start_date?->format('Y') }} - Present</p>
+                            </div>
+                        @endif
+
+                        {{-- PAST EMPLOYMENTS --}}
+                        @foreach ($alumni->pastEmployments ?? [] as $past)
+                            <div class="mb-4 border-l-4 border-green-600 pl-3">
+                                <h3 class="text-plp-green">{{ $past->position_title }}</h3>
+                                <p>{{ $past->company_name }}</p>
+                                <p>{{ $past->inclusive_years }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-gray-500 text-sm italic">No employment records available.</p>
+                    @endif
+                </x-white-card>
+
+                {{-- SKILLS --}}
+                <x-white-card class="p-6">
+                    <h1 class="font-bold mb-3 text-lg">Skills</h1>
+
+                    @if ($alumni->skills->count())
                         <div class="flex flex-wrap gap-2">
                             @foreach ($alumni->skills as $skill)
                                 <p
@@ -131,8 +143,11 @@
                                 </p>
                             @endforeach
                         </div>
-                    </x-white-card>
-                @endif
+                    @else
+                        <p class="text-gray-500 text-sm italic">No skills listed.</p>
+                    @endif
+                </x-white-card>
+
             </div>
         </div>
     </div>
