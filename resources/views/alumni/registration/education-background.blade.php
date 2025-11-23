@@ -32,7 +32,7 @@
 
             <div class="my-3">
                 <x-input-label for="course_id" :value="'Degree'" required />
-                <x-select-input name="course_id" id="course_id" :options="$courses->pluck('course_name', 'course_id')->prepend('-- Select Course --', '')->toArray()" :selected="old('course_id', $education['course_id'] ?? '')" required />
+                <x-select-input name="course_id" id="course_id" :options="$courses->pluck('course_name', 'course_id')->prepend('-- Select Program --', '')->toArray()" :selected="old('course_id', $education['course_id'] ?? '')" required />
             </div>
 
             <div class="my-4">
