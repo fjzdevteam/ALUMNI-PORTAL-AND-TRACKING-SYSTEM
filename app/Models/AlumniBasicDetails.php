@@ -65,6 +65,7 @@ class AlumniBasicDetails extends Model
         'civil_status',
         'mobile_number',
         'address',
+        'cert_path',
         'about',
         'facebook_link',
         'linkedin_link',

@@ -58,6 +58,14 @@
                             </div>
 
                             <div>
+                                <x-input-label value="Link (optional)" />
+                                <x-text-input type="url" name="link" value="{{ $entry->link ?? '' }}"
+                                    placeholder="https://facebook.com/example" class="w-full" />
+                                <p class="text-xs text-gray-500 mt-1">Add a URL to redirect users to Facebook or any
+                                    page.</p>
+                            </div>
+
+                            <div>
                                 <x-input-label value="Image" />
                                 @if (!empty($entry?->image_path))
                                     <div class="my-2 flex items-center gap-3">

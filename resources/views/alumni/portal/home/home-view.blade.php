@@ -30,6 +30,15 @@
                         {!! nl2br(e($newsItem->description)) !!}
                     </p>
 
+                    @if ($newsItem->link)
+                        <p class="mb-4">
+                            <a href="{{ $newsItem->link }}" target="_blank"
+                                class="text-green-600 underline hover:text-green-800">
+                                Read more / Visit link
+                            </a>
+                        </p>
+                    @endif
+
                     @if ($newsItem->special_mentions)
                         <p class="mb-4">
                             <strong>Special Mentions:</strong><br>

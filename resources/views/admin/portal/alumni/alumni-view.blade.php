@@ -328,4 +328,35 @@
             </div>
         @endif
     </x-white-card>
+
+    <x-white-card class="p-6 mt-4">
+        <h2 class="text-lg font-semibold text-plp-green mb-3">Uploaded Documents</h2>
+
+        @if ($alumni->basicDetails->cert_path)
+            <div class="p-4 bg-green-50 border border-green-300 rounded-lg flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-700" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16l4-4h6a2 2 0 002-2V4a2 2 0 00-2-2z" />
+                    </svg>
+
+                    <span class="text-green-800 font-medium">
+                        A document has been uploaded by this alumni.
+                    </span>
+                </div>
+
+                <a href="{{ asset('storage/' . $alumni->basicDetails->cert_path) }}" target="_blank"
+                    class="text-green-700 underline font-semibold hover:text-green-900 transition">
+                    View
+                </a>
+            </div>
+        @else
+            <div class="flex justify-center items-center h-10">
+                <p class="text-gray-500 text-sm text-center">
+                    No document uploaded.
+                </p>
+            </div>
+        @endif
+    </x-white-card>
+
 </x-app-layout>

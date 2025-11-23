@@ -136,6 +136,50 @@
 
         <div class="col-span-full order-3 md:order-3">
             <x-white-card class="p-6">
+                <h1 class="font-bold text-2xl">Achievements & Certificates</h1>
+                <p class="mt-1 text-sm text-gray-600 mb-4">
+                    Upload certificates, awards, recognitions, or any supporting documents that highlight your academic,
+                    professional, or community achievements. These may be considered for programs such as the
+                    Outstanding Alumni Award.
+                </p>
+
+                <form method="POST" action="{{ route('alumni.profile.update.certificate') }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div>
+                        <input type="file" name="resume" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            class="block w-full text-sm text-gray-500 border border-gray-300 rounded-md file:py-2 file:px-4
+                file:rounded-md file:border-0 file:text-sm file:font-semibold
+                file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+
+                        @if ($details->cert_path)
+                            <div
+                                class="mt-3 py-2 px-4 bg-green-50 border border-green-300 rounded-lg flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="size-5 text-green-700" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path d="M14 2H6a2 2 0 00-2 2v16l4-4h6a2 2 0 002-2V4a2 2 0 00-2-2z" />
+                                    </svg>
+                                    <span class="text-green-800 font-medium">A certificate has already been
+                                        uploaded.</span>
+                                </div>
+                                <a href="{{ asset('storage/' . $details->cert_path) }}" target="_blank"
+                                    class="text-green-700 underline font-semibold hover:text-green-900 transition">
+                                    View
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-4">
+                        <x-primary-button type="submit">Update</x-primary-button>
+                    </div>
+                </form>
+            </x-white-card>
+        </div>
+
+        <div class="col-span-full order-3 md:order-3">
+            <x-white-card class="p-6">
                 <h1 class="font-bold text-2xl">About</h1>
                 <p class="mt-1 text-sm text-gray-600 mb-4">
                     Let us get to know you better — write something about yourself.
@@ -223,7 +267,8 @@
                     </template>
 
                     <div class="flex justify-end gap-3 mt-4">
-                        <x-primary-button href="{{ route('show.add.skills') }}">View More Skills</x-primary-button>
+                        <x-primary-button href="{{ route('show.add.skills') }}">View More
+                            Skills</x-primary-button>
                         <x-primary-button type="submit">Update</x-primary-button>
                     </div>
                 </form>

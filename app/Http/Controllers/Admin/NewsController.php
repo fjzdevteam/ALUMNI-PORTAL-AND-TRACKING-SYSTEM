@@ -25,6 +25,7 @@ class NewsController extends Controller
                     'title' => '',
                     'description' => '',
                     'image_path' => '',
+                    'link' => '',
                 ]);
             }
 
@@ -41,6 +42,7 @@ class NewsController extends Controller
             'description' => 'required|string',
             'image' => 'nullable|mimes:jpg,jpeg,png|max:40960',
             'slot_number' => 'required|integer|min:1|max:3',
+            'link' => 'nullable|url|max:255',
         ]);
 
         $news = NewsDetail::where('slot_number', $request->slot_number)->first();
@@ -53,6 +55,11 @@ class NewsController extends Controller
             $imagePath = $request->file('image')->store('news_images', 'public');
         }
 
+        $link = trim($request->link);
+        if (empty($link) && $news) {
+            $link = $news->link;
+        }
+
         NewsDetail::updateOrCreate(
             ['slot_number' => $request->slot_number],
             [
@@ -60,6 +67,7 @@ class NewsController extends Controller
                 'description' => $request->description,
                 'date' => now(),
                 'image_path' => $imagePath,
+                'link' => $link,
             ]
         );
 

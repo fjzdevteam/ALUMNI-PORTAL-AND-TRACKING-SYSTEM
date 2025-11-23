@@ -34,5 +34,5 @@ class NewsDetail extends Model
     use HasFactory;
 
     protected $table = 'news_details';
-    protected $fillable = ['slot_number', 'title', 'date', 'description', 'image_path'];
+    protected $fillable = ['slot_number', 'title', 'date', 'description', 'image_path', 'link'];
 }

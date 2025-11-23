@@ -77,6 +77,29 @@ class ProfileController extends Controller
         return back()->with('success', 'Profile updated successfully!');
     }
 
+    public function updateCertificate(Request $request)
+    {
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'resume' => 'required|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+        ]);
+
+        $details = AlumniBasicDetails::firstOrCreate(['user_id' => $user->id]);
+
+        if ($details->cert_path && Storage::exists('public/' . $details->cert_path)) {
+            Storage::delete('public/' . $details->cert_path);
+        }
+
+        $path = $request->file('resume')->store('alumni_certificates', 'public');
+
+        $details->cert_path = $path;
+        $details->save();
+
+        return back()->with('success', 'Achievements and certificates updated successfully!');
+    }
+
+
     public function updateAbout(Request $request)
     {
         $user = Auth::user();
